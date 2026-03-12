@@ -1,0 +1,6 @@
+nodeLinker: node-modules
+
+# CRITICAL: Prevent hoisting to keep workspace dependencies isolated
+# This prevents React/React Native version conflicts between Vega (RN 0.72) and Expo TV (RN 0.76)
+# Each workspace gets its own node_modules with correct versions
+nmHoistingLimits: workspaces

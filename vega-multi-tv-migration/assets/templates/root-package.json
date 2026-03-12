@@ -1,0 +1,27 @@
+{
+  "name": "@myapp/workspace",
+  "version": "0.1.0",
+  "description": "Monorepo for MyApp across Vega and Expo TV",
+  "scripts": {
+    "clean": "yarn workspaces foreach --all run clean ; rm -rf node_modules",
+    "vega:build": "yarn workspace @myapp/vega run build:debug",
+    "expotv": "yarn workspace mytvproject",
+    "expotv:prebuild": "yarn workspace mytvproject run prebuild",
+    "expotv:android": "yarn workspace mytvproject run android",
+    "expotv:ios": "yarn workspace mytvproject run ios",
+    "expotv:web": "yarn workspace mytvproject run web"
+  },
+  "workspaces": {
+    "packages": [
+      "packages/*"
+    ],
+    "nohoist": [
+      "**/react",
+      "**/react-dom",
+      "**/react-native",
+      "**/react-native/**"
+    ]
+  },
+  "private": true,
+  "packageManager": "yarn@4.5.0+sha512.837566d24eec14ec0f5f1411adb544e892b3454255e61fdef8fd05f3429480102806bac7446bc9daff3896b01ae4b62d00096c7e989f1596f2af10b927532f39"
+}

@@ -1,0 +1,10 @@
+{
+  "name": "@myapp/shared",
+  "version": "0.0.1",
+  "description": "Shared app code",
+  "main": "src/index.ts",
+  "peerDependencies": {
+    "react": "*",
+    "react-native": "*"
+  }
+}

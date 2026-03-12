@@ -1,0 +1,24 @@
+{
+  "expo": {
+    "name": "MyAppTV",
+    "slug": "myapp-tv",
+    "orientation": "landscape",
+    "platforms": ["android", "ios"],
+    "scheme": "myapp-tv",
+    "plugins": [
+      "@react-native-tvos/config-tv",
+      [
+        "expo-build-properties",
+        {
+          "android": {
+            "kotlinVersion": "1.9.25"
+          },
+          "ios": {
+            "deploymentTarget": "15.1"
+          }
+        }
+      ],
+      "expo-router"
+    ]
+  }
+}

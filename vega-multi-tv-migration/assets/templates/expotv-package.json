@@ -1,0 +1,24 @@
+{
+  "name": "mytvproject",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "start": "EXPO_TV=1 npx expo start",
+    "android": "EXPO_TV=1 npx expo run:android --device",
+    "ios": "EXPO_TV=1 npx expo run:ios",
+    "web": "EXPO_TV=1 npx expo start --web",
+    "prebuild": "EXPO_TV=1 npx expo prebuild --clean && ./scripts/fix-tvos-deployment.sh",
+    "clean": "rm -rf node_modules android ios .expo"
+  },
+  "dependencies": {
+    "@myapp/shared": "*",
+    "expo": "~52.0.0",
+    "expo-build-properties": "~0.13.0",
+    "expo-router": "~4.0.0",
+    "react": "18.3.1",
+    "react-native": "npm:react-native-tvos@~0.76.0-0"
+  },
+  "devDependencies": {
+    "@react-native-tvos/config-tv": "~0.0.12"
+  }
+}
