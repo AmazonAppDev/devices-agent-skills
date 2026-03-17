@@ -26,4 +26,4 @@ See [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md).
 
 ## License
 
-MIT License — see individual skill directories for details.
+See individual skill directories for details.
