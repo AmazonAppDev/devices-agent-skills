@@ -13,10 +13,9 @@ jobs:
       - name: Scan all AmazonAppDev repos
         run: |
           ORG="AmazonAppDev"
-          SUMMARY="📊 *Weekly Triage Summary for $ORG*\n"
           TOTAL_ISSUES=0
           TOTAL_PRS=0
-          HAS_ITEMS=false
+          BODY=""
 
           REPOS=$(gh repo list "$ORG" --public --no-archived --json name --limit 100 -q '.[].name')
 
@@ -28,37 +27,40 @@ jobs:
             PR_COUNT=$(echo "$PRS" | jq length)
 
             if [ "$ISSUE_COUNT" -gt 0 ] || [ "$PR_COUNT" -gt 0 ]; then
-              HAS_ITEMS=true
-              SUMMARY+="\n*\`$REPO\`*"
+              BODY+="--- ${REPO} ---"$'\n'
 
               if [ "$ISSUE_COUNT" -gt 0 ]; then
-                SUMMARY+="\n_Issues ($ISSUE_COUNT):_\n"
-                SUMMARY+=$(echo "$ISSUES" | jq -r '.[] | "• #\(.number) \(.title) - \(.url)"' | head -10)
-                SUMMARY+="\n"
+                BODY+="Issues (${ISSUE_COUNT}):"$'\n'
+                while IFS= read -r line; do
+                  BODY+="  ${line}"$'\n'
+                done < <(echo "$ISSUES" | jq -r '.[] | "#\(.number) \(.title) - \(.url)"' | head -10)
                 TOTAL_ISSUES=$((TOTAL_ISSUES + ISSUE_COUNT))
               fi
 
               if [ "$PR_COUNT" -gt 0 ]; then
-                SUMMARY+="\n_PRs ($PR_COUNT):_\n"
-                SUMMARY+=$(echo "$PRS" | jq -r '.[] | "• #\(.number) \(.title) - \(.url)"' | head -10)
-                SUMMARY+="\n"
+                BODY+="PRs (${PR_COUNT}):"$'\n'
+                while IFS= read -r line; do
+                  BODY+="  ${line}"$'\n'
+                done < <(echo "$PRS" | jq -r '.[] | "#\(.number) \(.title) - \(.url)"' | head -10)
                 TOTAL_PRS=$((TOTAL_PRS + PR_COUNT))
               fi
+
+              BODY+=$'\n'
             fi
           done
 
-          if [ "$HAS_ITEMS" = false ]; then
-            SUMMARY+="\n✅ No open issues or PRs across the org!"
-          else
-            SUMMARY+="\n*Totals: $TOTAL_ISSUES open issues, $TOTAL_PRS open PRs*"
+          if [ "$TOTAL_ISSUES" -eq 0 ] && [ "$TOTAL_PRS" -eq 0 ]; then
+            BODY="No open issues or PRs across the org!"
           fi
+
+          TITLE="Weekly Triage: ${TOTAL_ISSUES} open issues, ${TOTAL_PRS} open PRs across ${ORG}"
 
           PAYLOAD=$(jq -n \
             --arg repo "$ORG" \
-            --arg event "📊 Weekly Org Summary" \
-            --arg title "$(echo -e "$SUMMARY")" \
-            --arg url "https://github.com/$ORG" \
-            --arg user "scheduled" \
+            --arg event "Weekly Org Summary" \
+            --arg title "$TITLE" \
+            --arg url "$BODY" \
+            --arg user "https://github.com/$ORG" \
             '{repo: $repo, event: $event, title: $title, url: $url, user: $user}')
 
           curl -X POST "${{ secrets.SLACK_WEBHOOK_URL }}" \
