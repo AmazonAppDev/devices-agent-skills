@@ -1,0 +1,66 @@
+name: Weekly Org Triage Summary
+on:
+  schedule:
+    - cron: '0 9 * * 1' # Every Monday at 9am UTC (10am BST)
+  workflow_dispatch: # Manual trigger from Actions tab
+
+jobs:
+  org-weekly-summary:
+    runs-on: ubuntu-latest
+    env:
+      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    steps:
+      - name: Scan all AmazonAppDev repos
+        run: |
+          ORG="AmazonAppDev"
+          SUMMARY="📊 *Weekly Triage Summary for $ORG*\n"
+          TOTAL_ISSUES=0
+          TOTAL_PRS=0
+          HAS_ITEMS=false
+
+          REPOS=$(gh repo list "$ORG" --public --no-archived --json name --limit 100 -q '.[].name')
+
+          for REPO in $REPOS; do
+            ISSUES=$(gh issue list --repo "$ORG/$REPO" --state open --json number,title,url --limit 50 2>/dev/null || echo "[]")
+            PRS=$(gh pr list --repo "$ORG/$REPO" --state open --json number,title,url --limit 50 2>/dev/null || echo "[]")
+
+            ISSUE_COUNT=$(echo "$ISSUES" | jq length)
+            PR_COUNT=$(echo "$PRS" | jq length)
+
+            if [ "$ISSUE_COUNT" -gt 0 ] || [ "$PR_COUNT" -gt 0 ]; then
+              HAS_ITEMS=true
+              SUMMARY+="\n*\`$REPO\`*"
+
+              if [ "$ISSUE_COUNT" -gt 0 ]; then
+                SUMMARY+="\n_Issues ($ISSUE_COUNT):_\n"
+                SUMMARY+=$(echo "$ISSUES" | jq -r '.[] | "• #\(.number) \(.title) - \(.url)"' | head -10)
+                SUMMARY+="\n"
+                TOTAL_ISSUES=$((TOTAL_ISSUES + ISSUE_COUNT))
+              fi
+
+              if [ "$PR_COUNT" -gt 0 ]; then
+                SUMMARY+="\n_PRs ($PR_COUNT):_\n"
+                SUMMARY+=$(echo "$PRS" | jq -r '.[] | "• #\(.number) \(.title) - \(.url)"' | head -10)
+                SUMMARY+="\n"
+                TOTAL_PRS=$((TOTAL_PRS + PR_COUNT))
+              fi
+            fi
+          done
+
+          if [ "$HAS_ITEMS" = false ]; then
+            SUMMARY+="\n✅ No open issues or PRs across the org!"
+          else
+            SUMMARY+="\n*Totals: $TOTAL_ISSUES open issues, $TOTAL_PRS open PRs*"
+          fi
+
+          PAYLOAD=$(jq -n \
+            --arg repo "$ORG" \
+            --arg event "📊 Weekly Org Summary" \
+            --arg title "$(echo -e "$SUMMARY")" \
+            --arg url "https://github.com/$ORG" \
+            --arg user "scheduled" \
+            '{repo: $repo, event: $event, title: $title, url: $url, user: $user}')
+
+          curl -X POST "${{ secrets.SLACK_WEBHOOK_URL }}" \
+            -H "Content-Type: application/json" \
+            -d "$PAYLOAD"
