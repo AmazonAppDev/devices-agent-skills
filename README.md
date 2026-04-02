@@ -8,7 +8,7 @@ A collection of **Agent Skills** — structured knowledge packages that give AI 
 |-------|-------------|
 | [vega-multi-tv-migration](vega-multi-tv-migration/SKILL.md) | Migrate Vega OS (Fire TV) apps to multi-platform React Native monorepo supporting Android TV, Apple TV, and more |
 
-## How to Use
+## Installation
 
 ### 1. Install via skills.sh (Recommended)
 
@@ -33,11 +33,11 @@ For more options, see the [skills CLI documentation](https://skills.sh/docs/cli)
 1. Copy a skill directory into your AI assistant's skills folder (e.g. `~/.kiro/skills/` for Kiro).
 2. The assistant will automatically discover and activate the skill based on your conversation.
 
-### Using a Skill
+## Usage
 
-Once installed, tell the assistant which phase or task you need help with, and it will load the appropriate reference documents and guide you through.
+Once installed, your AI agent will automatically activate the skill when your conversation matches its topic. The agent uses the skill's guides and references to walk you through the right workflow for your situation.
 
-Each skill's reference documents also work as standalone step-by-step guides. Start with `SKILL.md` for an overview, then follow the referenced phases in order.
+You can also open any skill's `SKILL.md` directly to browse its phases, reference docs, and templates.
 
 ## Contributing
 
