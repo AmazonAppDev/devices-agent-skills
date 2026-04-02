@@ -10,9 +10,32 @@ A collection of **Agent Skills** — structured knowledge packages that give AI 
 
 ## How to Use
 
+### 1. Install via skills.sh (Recommended)
+
+The quickest way to install a skill is with the [skills.sh](https://skills.sh/) CLI. No setup needed, just run it with `npx`.
+
+Install all skills from this repo:
+
+```bash
+npx skills add AmazonAppDev/devices-agent-skills
+```
+
+Install a specific skill:
+
+```bash
+npx skills add AmazonAppDev/devices-agent-skills --skill vega-multi-tv-migration
+```
+
+For more options, see the [skills CLI documentation](https://skills.sh/docs/cli).
+
+### 2. Manual Installation
+
 1. Copy a skill directory into your AI assistant's skills folder (e.g. `~/.kiro/skills/` for Kiro).
 2. The assistant will automatically discover and activate the skill based on your conversation.
-3. Tell the assistant which phase or task you need help with, and it will load the appropriate reference documents and guide you through.
+
+### Using a Skill
+
+Once installed, tell the assistant which phase or task you need help with, and it will load the appropriate reference documents and guide you through.
 
 Each skill's reference documents also work as standalone step-by-step guides. Start with `SKILL.md` for an overview, then follow the referenced phases in order.
 
