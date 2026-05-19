@@ -9,6 +9,7 @@ This repository contains skills that work across open-source frameworks, tools a
 | Skill | Description |
 |-------|-------------|
 | [vega-multi-tv-migration](vega-multi-tv-migration/SKILL.md) | Migrate Vega OS (Fire TV) apps to multi-platform React Native monorepo supporting Android TV, Apple TV, and more |
+| [vega-tv-performance](vega-tv-performance/SKILL.md) | Measure, diagnose, and optimize performance for Vega TV apps, including React Native for Vega and Vega WebView |
 
 ## Installation
 
@@ -26,6 +27,10 @@ Install a specific skill:
 
 ```bash
 npx skills add AmazonAppDev/devices-agent-skills --skill vega-multi-tv-migration
+```
+
+```bash
+npx skills add AmazonAppDev/devices-agent-skills --skill vega-tv-performance
 ```
 
 For more options, see the [skills CLI documentation](https://skills.sh/docs/cli).
