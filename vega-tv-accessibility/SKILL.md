@@ -76,6 +76,10 @@ rg "@amazon-devices/react-native-kepler|build:app|vega project|react-native-vega
 
 Use [ACCESSIBILITY_CHECKLIST.md](assets/templates/ACCESSIBILITY_CHECKLIST.md) as the working checklist during audits and fixes.
 
+### Evals
+
+Use [evals/README.md](evals/README.md) to test trigger quality, task quality, and with-skill vs without-skill behavior.
+
 ## Problem -> Skill Mapping
 
 | Problem | Start With |
