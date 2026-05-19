@@ -1,6 +1,6 @@
 # Eval Runbook
 
-Use this runbook to compare baseline agent behavior with behavior after installing or enabling `vega-tv-accessibility`.
+Use this runbook to compare baseline agent behavior with behavior after installing or enabling `react-native-tv-accessibility`.
 
 ## Preparation
 

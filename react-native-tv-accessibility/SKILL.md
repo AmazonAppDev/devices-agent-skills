@@ -1,5 +1,5 @@
 ---
-name: vega-tv-accessibility
+name: react-native-tv-accessibility
 description: Audit and fix accessibility for React Native TV and Vega TV applications, including Vega WebView apps and native React Native for Vega apps. Use when reviewing TV app accessibility, VoiceView, screen reader output, D-pad or remote navigation, focus management, captions, magnifier behavior, React Native accessibility props, Vega WebView accessibility, WCAG, WAI-ARIA, or accessible media app flows.
 ---
 

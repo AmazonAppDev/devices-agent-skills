@@ -1,6 +1,6 @@
 # Task Scenarios
 
-Run each scenario twice: once without the skill and once with `vega-tv-accessibility` available. Score both outputs with [SCORING_RUBRIC.md](SCORING_RUBRIC.md).
+Run each scenario twice: once without the skill and once with `react-native-tv-accessibility` available. Score both outputs with [SCORING_RUBRIC.md](SCORING_RUBRIC.md).
 
 ## Scenario 1: Mixed App Detection
 

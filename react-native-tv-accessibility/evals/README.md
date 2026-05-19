@@ -1,6 +1,6 @@
 # Vega TV Accessibility Evals
 
-Use these evals to measure whether `vega-tv-accessibility` improves agent behavior compared with a baseline run without the skill.
+Use these evals to measure whether `react-native-tv-accessibility` improves agent behavior compared with a baseline run without the skill.
 
 These evals follow the skill-creator loop:
 1. Run each prompt without the skill.

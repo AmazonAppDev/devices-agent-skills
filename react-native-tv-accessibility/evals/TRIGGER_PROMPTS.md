@@ -3,8 +3,8 @@
 Use these prompts to evaluate whether the skill description activates at the right time.
 
 Expected behavior:
-- **Trigger** prompts should use `vega-tv-accessibility`.
-- **Non-trigger** prompts should not use `vega-tv-accessibility` unless the user adds accessibility context.
+- **Trigger** prompts should use `react-native-tv-accessibility`.
+- **Non-trigger** prompts should not use `react-native-tv-accessibility` unless the user adds accessibility context.
 
 ## Trigger Prompts
 
