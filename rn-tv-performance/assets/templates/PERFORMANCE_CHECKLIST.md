@@ -1,10 +1,10 @@
 # Performance Checklist
 
-Use this checklist during Vega TV performance investigations.
+Use this checklist during React Native TV performance investigations. Use Vega-specific KPI and profiling checks when the app targets Vega.
 
 ## Scope
 
-- [ ] Identified app surface: native React Native for Vega, Vega WebView, mixed, or unknown.
+- [ ] Identified app surface: generic React Native TV, React Native for Vega, Vega WebView, mixed, or unknown.
 - [ ] Identified symptom: launch, UI fluidity, video, CPU, memory, rendering, network, list, or WebGL.
 - [ ] Identified target device and build variant.
 - [ ] Confirmed measurements are from a repeatable scenario.
@@ -22,7 +22,7 @@ Use this checklist during Vega TV performance investigations.
 - [ ] Recorded background memory.
 - [ ] Compared P90 values from the same iteration count before and after the fix.
 
-## Native React Native for Vega
+## Native React Native TV
 
 - [ ] Checked unnecessary re-renders with React DevTools or why-did-you-render in development.
 - [ ] Memoized expensive stable children where evidence supports it.

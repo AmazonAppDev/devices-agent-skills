@@ -1,19 +1,19 @@
 # Trigger and Non-Trigger Prompts
 
 Expected behavior:
-- Trigger prompts should use `vega-tv-performance`.
-- Non-trigger prompts should not use `vega-tv-performance` unless the user adds performance context.
+- Trigger prompts should use `rn-tv-performance`.
+- Non-trigger prompts should not use `rn-tv-performance` unless the user adds performance context.
 
 ## Trigger Prompts
 
-1. "Our Vega TV app has slow cold startup. Help measure TTFF and TTFD."
+1. "Our React Native TV app has slow cold startup. Help measure a baseline before optimizing."
 2. "The KPI Visualizer shows UI fluidity below 99%. What should we inspect?"
-3. "React Native for Vega FlatList rails feel sluggish with D-pad navigation."
+3. "React Native TV FlatList rails feel sluggish with D-pad navigation."
 4. "Vega WebView launch is slow because of network and JavaScript loading."
 5. "How do I use Activity Monitor to find CPU hot functions in a Vega app?"
 6. "Video playback drops frames in our Vega WebView app."
 7. "TTFD is showing -1 in the Vega KPI Visualizer."
-8. "Help optimize a React Native for Vega search screen with useTransition."
+8. "Help optimize a React Native TV search screen with useTransition."
 9. "Chrome DevTools shows long WebView tasks during page load on Vega."
 10. "Detect and fix overdraw in a Vega TV app."
 

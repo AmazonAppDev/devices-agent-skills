@@ -1,6 +1,6 @@
 # Eval Runbook
 
-Use this runbook to compare baseline agent behavior with behavior after installing or enabling `vega-tv-performance`.
+Use this runbook to compare baseline agent behavior with behavior after installing or enabling `rn-tv-performance`.
 
 ## Preparation
 
@@ -55,7 +55,7 @@ Recommended skill change:
 Update the skill when:
 - Two or more scenarios miss the same required behavior.
 - Any scenario recommends optimization before measurement.
-- Any scenario mixes WebView and native React Native for Vega guidance incorrectly.
+- Any scenario mixes WebView and native React Native TV guidance incorrectly.
 - Trigger precision is below 9/10.
 - Non-trigger specificity is below 8/10.
 - Task pass rate is below 80%.

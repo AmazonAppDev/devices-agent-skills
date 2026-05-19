@@ -1,6 +1,6 @@
-# Vega TV Performance Evals
+# RN TV Performance Evals
 
-Use these evals to measure whether `vega-tv-performance` improves performance investigations compared with a baseline run without the skill.
+Use these evals to measure whether `rn-tv-performance` improves performance investigations compared with a baseline run without the skill.
 
 ## Files
 
@@ -21,7 +21,7 @@ Use these evals to measure whether `vega-tv-performance` improves performance in
 ## Required Behaviors
 
 High-quality outputs should:
-- Detect app surface first: native React Native for Vega, WebView, mixed, or unknown.
+- Detect app surface first: generic React Native TV, React Native for Vega, Vega WebView, mixed, or unknown.
 - Choose a KPI and establish a baseline before recommending fixes.
 - Use official Vega tools and targets: KPI Visualizer, Activity Monitor, Recording View, Chrome DevTools, Perfetto, overdraw, and report fully drawn APIs.
 - Apply platform-specific fixes for native RN or WebView.

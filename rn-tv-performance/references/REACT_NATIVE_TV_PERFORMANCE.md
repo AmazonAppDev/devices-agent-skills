@@ -1,6 +1,6 @@
-# React Native for Vega Performance
+# React Native TV Performance
 
-Use this reference for native React Native for Vega app surfaces.
+Use this reference for native React Native TV app surfaces. Apply the general guidance to Android TV, Apple TV, and other React Native TV targets, then use the Vega notes when the app is React Native for Vega.
 
 Primary sources:
 - App Performance Best Practices: https://developer.amazon.com/docs/vega/0.21/best_practices.html
@@ -11,7 +11,7 @@ Primary sources:
 ## First Checks
 
 Before changing code:
-- Confirm this is a native React Native for Vega surface, not WebView content.
+- Confirm this is a native React Native TV surface, not WebView content.
 - Identify the user-visible symptom: launch, focus/D-pad lag, list scroll, rail navigation, animation, video, CPU, or memory.
 - Measure the relevant KPI.
 - Inspect React renders, JS thread, render thread, and memory before choosing a fix.
@@ -51,7 +51,7 @@ For `FlatList`:
 - Use thumbnails/cropped assets for list items.
 
 For `FlashList`:
-- Vega supports Shopify FlashList as a performant alternative.
+- Use FlashList as a performant alternative when it is supported by the project and target platform.
 - Set `estimatedItemSize`.
 - Account for item recycling; avoid item-local state that carries across recycled items.
 - Remove unnecessary `key` props inside item components.
@@ -59,7 +59,7 @@ For `FlashList`:
 
 ## Images
 
-React Native for Vega includes native caching mechanisms in its `Image` implementation.
+Use right-sized image assets for TV surfaces. React Native for Vega includes native caching mechanisms in its `Image` implementation; other React Native TV targets may need project-specific image caching.
 
 Use:
 - Cropped or thumbnail-sized images in lists and rails.
@@ -86,6 +86,15 @@ Use `Suspense` and `lazy` for heavy components or screens that can be code-split
 
 Always pair concurrent rendering with memoization for expensive children, otherwise parent renders can erase the benefit.
 
+## Vega Notes
+
+For React Native for Vega:
+- Use official Vega KPI Visualizer targets and commands when release-readiness evidence is needed.
+- Use Vega Activity Monitor, Recording View, and CPU profiler for CPU and memory issues.
+- React Native for Vega includes native caching mechanisms in its `Image` implementation.
+- Vega supports Shopify FlashList as a performant alternative.
+- Re-test D-pad navigation and focus movement on the target Vega device after performance fixes.
+
 ## CPU and Memory
 
 If CPU is high:
@@ -101,7 +110,7 @@ If memory is high:
 
 After a fix:
 - Re-run the same KPI command and scenario.
-- Check UI fluidity stays at or above 99%.
+- Check UI fluidity stays within the target for the platform. For Vega, target 99% or higher.
 - Re-test D-pad navigation and focus movement on the target device.
 - Confirm memory did not regress.
 - Capture before/after values and the code path changed.

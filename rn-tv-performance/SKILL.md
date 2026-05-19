@@ -1,33 +1,33 @@
 ---
-name: vega-tv-performance
-description: Audit, measure, and optimize performance for Vega TV applications, including React Native for Vega apps and Vega WebView apps. Use when investigating app launch latency, TTFF, TTFD, UI fluidity, video fluidity, memory, CPU usage, overdraw, jank, slow lists, re-renders, WebView performance, Web Workers, WebGL, profiling, or Vega KPI Visualizer results.
+name: rn-tv-performance
+description: Audit, measure, and optimize performance for React Native TV applications, with Vega-specific guidance for React Native for Vega and Vega WebView apps. Use when investigating app launch latency, UI fluidity, video fluidity, memory, CPU usage, overdraw, jank, slow lists, re-renders, WebView performance, Web Workers, WebGL, profiling, Vega KPI Visualizer results, TTFF, TTFD, or TTFVF.
 ---
 
-# Vega TV Performance
+# RN TV Performance
 
 ## Overview
 
-Measure before optimizing. Help agents diagnose and improve Vega TV app performance using official Vega performance KPIs, Vega Studio profiling tools, React Native for Vega guidance, and Vega WebView guidance.
+Measure before optimizing. Help agents diagnose and improve React Native TV app performance across native TV surfaces, with Vega-specific guidance for React Native for Vega, Vega WebView, official Vega KPIs, and Vega Studio profiling tools.
 
-Always identify the app surface first because native React Native for Vega apps and Vega WebView apps use different APIs and performance tactics.
+Always identify the app surface first because generic React Native TV, React Native for Vega, and Vega WebView apps use different APIs, tools, and performance tactics.
 
 ## When to Apply
 
 Use this skill when user mentions:
-- Vega app performance, slow startup, launch latency, TTFF, TTFD, or report fully drawn
+- React Native TV app performance, slow startup, launch latency, responsiveness, or release-readiness
 - UI jank, poor fluidity, slow D-pad navigation, frame drops, or unresponsive screens
 - Video startup, Time-to-First Video Frame, buffering, dropped frames, or video fluidity
 - High CPU usage, memory growth, crashes, background memory, or profiling
-- React Native for Vega re-renders, FlatList, FlashList, memoization, concurrent rendering, or image/list performance
-- Vega WebView performance, network requests, cache headers, JavaScript execution, Web Workers, WebGL, or hardware decode
-- Vega App KPI Visualizer, Activity Monitor, Recording View, Perfetto, Chrome DevTools, overdraw, or flamegraphs
+- React Native re-renders, FlatList, FlashList, memoization, concurrent rendering, or image/list performance
+- Vega app performance, React Native for Vega, Vega WebView, TTFF, TTFD, TTFVF, or report fully drawn
+- Vega KPI Visualizer, Activity Monitor, Recording View, Perfetto, Chrome DevTools, overdraw, or flamegraphs
 
 ## Phase Priority Guide
 
 | Priority | Phase | Impact | When to Use |
 |----------|-------|--------|-------------|
 | 1 | App Surface Detection | CRITICAL | Before recommending platform-specific fixes |
-| 2 | KPI Baseline | CRITICAL | Before optimizing launch, fluidity, memory, or video |
+| 2 | Baseline Measurement | CRITICAL | Before optimizing launch, fluidity, memory, or video |
 | 3 | Tool Selection | HIGH | Choose KPI Visualizer, Activity Monitor, CDT, Perfetto, or overdraw |
 | 4 | Root Cause Analysis | HIGH | Map symptoms to CPU, memory, rendering, network, list, video, or WebView causes |
 | 5 | Targeted Fix | HIGH | Apply the smallest source-aligned fix and re-measure |
@@ -37,17 +37,19 @@ Use this skill when user mentions:
 ```
 What is slow?
 +-- Launch or resume?
-|   +-- Measure TTFF and TTFD; verify reportFullyDrawn/useReportFullyDrawn
+|   +-- Measure platform launch metrics; for Vega, measure TTFF/TTFD and verify reportFullyDrawn/useReportFullyDrawn
 +-- UI interaction, scrolling, D-pad, or animation?
 |   +-- Measure ui-fluidity; inspect re-renders, overdraw, render thread, and JS thread
 +-- Video startup or playback?
 |   +-- Measure video-fluidity and TTFVF; check hardware decode and media setup
 +-- Memory or crash?
 |   +-- Measure foreground/background memory; inspect Activity Monitor recordings
++-- Native React Native TV screen?
+|   +-- Use RN TV guidance for memoization, lists, images, render work, and navigation responsiveness
 +-- WebView page or HTML app?
-|   +-- Use WebView performance guidance for network, JS, cache, Web Workers, WebGL, video
-+-- Native React Native for Vega screen?
-|   +-- Use RN for Vega guidance for memoization, lists, images, concurrent rendering
+|   +-- Use WebView guidance for network, JS, cache, Web Workers, WebGL, video
++-- Vega app?
+|   +-- Use Vega KPI and profiling guidance for official metrics and tooling
 +-- Unknown?
     +-- Inspect manifest.toml, package.json, app entry points, WebView usage, and rendered flows
 ```
@@ -57,6 +59,9 @@ What is slow?
 ### Detect App Surface
 
 ```bash
+# Generic React Native TV indicators
+rg "react-native|react-native-tvos|@react-native|FlatList|FlashList|TVEventHandler|hasTVPreferredFocus"
+
 # Vega package marker
 find . -name manifest.toml -maxdepth 5
 
@@ -67,7 +72,7 @@ rg "@amazon-devices/webview|<WebView|webview.html|ReactNativeWebView|postMessage
 rg "@amazon-devices/react-native-kepler|react-native-vega|build:app|vega project|FlatList|FlashList"
 ```
 
-### Measure Before Fixing
+### Vega Measurement Commands
 
 ```bash
 # Check host and target readiness
@@ -86,7 +91,7 @@ vega exec perf kpi-visualizer --app-name=<interactive-component-id> --kpi ui-flu
 vega exec perf activity-monitor --record-cpu-profiling --app-name=<interactive-component-id> --sourcemap-file-path=<source-map>
 ```
 
-### KPI Targets From Vega Docs
+### Vega KPI Targets
 
 - Cool start TTFF: less than 1.5 s
 - Warm start TTFF: less than 0.5 s
@@ -99,14 +104,18 @@ vega exec perf activity-monitor --record-cpu-profiling --app-name=<interactive-c
 - UI fluidity: target 99% or higher
 - Iterations: default 3; certification mode uses 30 with 90th percentile aggregation
 
+### Vega-Specific Path
+
+Use the Vega-specific references when the app is React Native for Vega, uses Vega WebView, exposes `manifest.toml`, or needs official Vega KPI evidence. For non-Vega React Native TV apps, use the RN TV reference and the project's available platform profilers, then adapt the same measure-before-fix workflow.
+
 ## References
 
 | File | Impact | Description |
 |------|--------|-------------|
-| [KPI_MEASUREMENT.md](references/KPI_MEASUREMENT.md) | CRITICAL | Vega KPI Visualizer metrics, targets, commands, and report fully drawn APIs |
-| [REACT_NATIVE_VEGA_PERFORMANCE.md](references/REACT_NATIVE_VEGA_PERFORMANCE.md) | CRITICAL | React Native for Vega optimization for renders, lists, images, and concurrent rendering |
+| [REACT_NATIVE_TV_PERFORMANCE.md](references/REACT_NATIVE_TV_PERFORMANCE.md) | CRITICAL | React Native TV optimization for renders, lists, images, concurrent rendering, and TV navigation responsiveness |
+| [KPI_MEASUREMENT.md](references/KPI_MEASUREMENT.md) | CRITICAL | Vega-specific KPI Visualizer metrics, targets, commands, and report fully drawn APIs |
 | [WEBVIEW_PERFORMANCE.md](references/WEBVIEW_PERFORMANCE.md) | CRITICAL | Vega WebView launch, network, rendering, cache, Web Worker, WebGL, and video guidance |
-| [PROFILING_AND_RENDERING.md](references/PROFILING_AND_RENDERING.md) | HIGH | Activity Monitor, Recording View, CPU profiler, Chrome DevTools, Perfetto, overdraw |
+| [PROFILING_AND_RENDERING.md](references/PROFILING_AND_RENDERING.md) | HIGH | Vega Activity Monitor, Recording View, CPU profiler, Chrome DevTools, Perfetto, overdraw |
 
 ### Templates
 
@@ -120,11 +129,12 @@ Use [evals/README.md](evals/README.md) to test trigger quality, task quality, an
 
 | Problem | Start With |
 |---------|------------|
-| Slow launch or resume | KPI_MEASUREMENT.md |
-| TTFD is missing or `-1` | KPI_MEASUREMENT.md |
+| Slow React Native TV screen or interaction | REACT_NATIVE_TV_PERFORMANCE.md |
+| Slow Vega launch or resume | KPI_MEASUREMENT.md |
+| Vega TTFD is missing or `-1` | KPI_MEASUREMENT.md |
 | UI jank or D-pad lag | PROFILING_AND_RENDERING.md, then platform reference |
-| Slow FlatList/rails | REACT_NATIVE_VEGA_PERFORMANCE.md |
-| Too many React renders | REACT_NATIVE_VEGA_PERFORMANCE.md |
+| Slow FlatList/rails | REACT_NATIVE_TV_PERFORMANCE.md |
+| Too many React renders | REACT_NATIVE_TV_PERFORMANCE.md |
 | Slow WebView load | WEBVIEW_PERFORMANCE.md |
 | Heavy WebView JavaScript | WEBVIEW_PERFORMANCE.md |
 | High CPU or memory | PROFILING_AND_RENDERING.md |
@@ -133,10 +143,10 @@ Use [evals/README.md](evals/README.md) to test trigger quality, task quality, an
 
 ## Workflow
 
-1. Detect app surface: native React Native for Vega, Vega WebView, mixed, or unknown.
+1. Detect app surface: generic React Native TV, React Native for Vega, Vega WebView, mixed, or unknown.
 2. Identify the symptom and target KPI: launch, UI fluidity, video fluidity, memory, CPU, or rendering.
-3. Run the appropriate Vega measurement tool on a release build when possible.
-4. Inspect evidence: KPI Visualizer output, Activity Monitor recording, flamegraph, Perfetto trace, Chrome DevTools profile, overdraw colors, or re-render logs.
+3. Run the appropriate measurement tool on a release build when possible. For Vega, use KPI Visualizer, Activity Monitor, Recording View, and related Vega tools.
+4. Inspect evidence: profiler output, KPI Visualizer output, Activity Monitor recording, flamegraph, Perfetto trace, Chrome DevTools profile, overdraw colors, or re-render logs.
 5. Apply targeted fixes from the correct reference path.
 6. Re-run the same measurement and compare before/after values.
 7. Report symptom, baseline, root cause, fix, after-measurement, remaining risk, and official source used.
@@ -146,8 +156,8 @@ Use [evals/README.md](evals/README.md) to test trigger quality, task quality, an
 - Do not optimize before establishing a baseline measurement.
 - Do not compare debug-build numbers against release-build numbers.
 - Do not compare before/after results from different devices, app states, scenarios, or iteration counts.
-- Do not treat TTFD as valid unless the app reports fully drawn when it is actually ready for user interaction.
-- Do not apply WebView fixes to native React Native for Vega surfaces, or native-only fixes to WebView content, without checking app surface first.
+- Do not treat Vega TTFD as valid unless the app reports fully drawn when it is actually ready for user interaction.
+- Do not apply WebView fixes to native React Native surfaces, or native-only fixes to WebView content, without checking app surface first.
 
 ## Official Sources
 
@@ -163,4 +173,4 @@ Use [evals/README.md](evals/README.md) to test trigger quality, task quality, an
 
 ## Attribution
 
-Based on official Vega, React Native for Vega, Vega WebView, and Vega Studio performance documentation.
+Based on official React Native performance patterns plus official Vega, React Native for Vega, Vega WebView, and Vega Studio performance documentation.

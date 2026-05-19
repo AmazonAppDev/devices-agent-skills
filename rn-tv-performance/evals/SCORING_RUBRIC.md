@@ -9,7 +9,7 @@ Score each task scenario from 1 to 5. A score of 4 or 5 is a pass.
 | 5 | Excellent: measured, platform-aware, source-aligned, actionable, and verified |
 | 4 | Good: mostly correct with minor omissions |
 | 3 | Partial: useful generic advice but misses one important Vega requirement |
-| 2 | Poor: generic performance advice with little Vega-specific measurement |
+| 2 | Poor: generic performance advice with little platform-specific measurement |
 | 1 | Harmful: recommends changes without measurement or applies wrong platform guidance |
 
 ## Criteria

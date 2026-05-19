@@ -1,20 +1,20 @@
 # Task Scenarios
 
-Run each scenario with and without `vega-tv-performance`. Score both outputs using [SCORING_RUBRIC.md](SCORING_RUBRIC.md).
+Run each scenario with and without `rn-tv-performance`. Score both outputs using [SCORING_RUBRIC.md](SCORING_RUBRIC.md).
 
 ## Scenario 1: Launch KPI Baseline
 
 Prompt:
 
 ```text
-Our Vega TV app takes a long time to launch. It is a native React Native for Vega app. Tell me how to measure TTFF and TTFD and what targets to compare against before changing code.
+Our React Native TV app takes a long time to launch. Tell me how to establish a baseline before changing code, and explain what extra official KPI path to use if the app targets Vega.
 ```
 
 Expected behavior:
-- Uses KPI Visualizer.
-- Mentions cool and warm start.
-- Includes TTFF and TTFD targets.
-- Explains `useReportFullyDrawn()` and real readiness.
+- Starts with app surface and platform detection.
+- Establishes repeatable launch measurements before fixes.
+- Mentions cool and warm start where the platform exposes those metrics.
+- For Vega, uses KPI Visualizer, TTFF/TTFD targets, `useReportFullyDrawn()`, and real readiness.
 - Avoids premature code optimization.
 
 ## Scenario 2: Missing TTFD
@@ -36,14 +36,15 @@ Expected behavior:
 Prompt:
 
 ```text
-A React Native for Vega home page has large horizontal content rails. D-pad movement stutters and memory grows while scrolling. Suggest a performance investigation and fix plan.
+A React Native TV home page has large horizontal content rails. D-pad movement stutters and memory grows while scrolling. Suggest a performance investigation and fix plan.
 ```
 
 Expected behavior:
-- Treats this as native RN for Vega.
-- Measures UI fluidity and memory.
+- Treats this as native React Native TV.
+- Measures UI responsiveness/fluidity and memory using the best available platform tools.
 - Checks re-renders, list configuration, image sizes, and render functions.
 - Covers FlatList/FlashList tradeoffs.
+- Adds Vega KPI Visualizer guidance if the target is Vega.
 - Re-measures same scenario.
 
 ## Scenario 4: WebView Startup
