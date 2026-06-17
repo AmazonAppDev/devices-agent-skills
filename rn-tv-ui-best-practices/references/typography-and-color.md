@@ -1,132 +1,174 @@
-# Typography and Color for TV Displays
+---
+title: Typography and Color
+tags: typography, font-size, line-height, letter-spacing, contrast, color, palette, hdr, ambient-light, multi-cue-focus, amazon-ember
+---
 
-TV-specific typography and color guidelines. What works on phones fails on TV due to distance, panel tech, ambient light, and OS rendering.
+# Typography and Color
 
-## Gotchas
+Font sizes, line height, contrast ratios, and palette choices calibrated for 10ft TV viewing. Mobile defaults fail on TV — this file is the source of "what numbers to use."
 
-- TV text must be **50-80% larger** than mobile equivalents. A 16px body on mobile = 24px on TV. Anything smaller is unreadable from the couch.
-- Avoid pure `#FFFFFF` on pure `#000000` for entire screens — causes eye fatigue and HDR glow. Use near-white (#E5E5E7) and near-black (#1a1a1a).
-- Focus contrast must use **multi-cue**: color + border/outline + mild scale. Color alone fails for color-deficient users and washed-out displays.
+---
 
-## Typography
+## Sizes
 
-### Critical Values (Guidelines)
+TV text needs to be 50–80% larger than its mobile equivalent. Starting points; adapt per brand and verify on hardware.
 
-These are recommended starting points based on visual acuity research for living room environments. Adapt to your app's brand and user testing results.
+| Style   | Mobile | TV  | Use                      |
+| ------- | ------ | --- | ------------------------ |
+| Caption | 12     | 20  | Metadata, labels, tags   |
+| Body    | 16     | 24  | Descriptions, paragraphs |
+| Button  | 14     | 22  | Interactive CTAs         |
+| Heading | 20     | 32  | Section titles           |
+| Title   | 28     | 48  | Page titles, hero text   |
+| Display | 36     | 64  | Large promotional text   |
 
-```
-Typography (minimum TV sizes):
-  Body: 24px | Caption: 20px | Button: 22px
-  Heading: 32px | Title: 48px | Display: 64px
+If font sizes are scattered ad-hoc through stylesheets, recommend a token set:
 
-Contrast:
-  Normal text: >= 4.5:1
-  Core UI (menus, buttons, captions): >= 7:1
-  Focus border: #00D4FF (11.3:1 vs black)
-```
+```ts
+// styles/tvTypography.ts
+import { StyleSheet } from "react-native";
 
-### Recommended Font Sizes
-
-TV text should be 50-80% larger than mobile equivalents. These are guidelines based on visual acuity research for living room environments — use as starting points and adjust based on your app's design and user testing:
-
-| Text Style | Mobile | TV | Use Case |
-|---|---|---|---|
-| Body | 16px | 24px | Descriptions, paragraphs |
-| Caption | 12px | 20px | Metadata, labels, tags |
-| Button | 14px | 22px | Interactive elements, CTAs |
-| Heading | 20px | 32px | Section titles, category names |
-| Title | 28px | 48px | Page titles, hero text |
-| Display | 36px | 64px | Large promotional text |
-
-```js
-const tvTypography = StyleSheet.create({
-  body: { fontSize: 24, lineHeight: 32, fontWeight: '400' },
-  button: { fontSize: 22, lineHeight: 28, fontWeight: '600' },
-  caption: { fontSize: 20, lineHeight: 26, fontWeight: '400' },
-  heading: { fontSize: 32, lineHeight: 40, fontWeight: '600' },
-  title: { fontSize: 48, lineHeight: 56, fontWeight: '700' },
+export const tvTypography = StyleSheet.create({
+  caption: { fontSize: 20, lineHeight: 26, fontWeight: "400" },
+  body: { fontSize: 24, lineHeight: 32, fontWeight: "400" },
+  button: { fontSize: 22, lineHeight: 28, fontWeight: "600" },
+  heading: { fontSize: 32, lineHeight: 40, fontWeight: "600" },
+  title: { fontSize: 48, lineHeight: 56, fontWeight: "700" },
+  display: { fontSize: 64, lineHeight: 72, fontWeight: "700" },
 });
 ```
 
-**Verify before ship:** every text style on screen lands at >= 20px (captions) and >= 24px (body). Anything smaller is a regression — a single 16px label slipping through is the kind of thing only catches at couch distance, so audit explicitly rather than relying on a quick scan.
+**Watch out for:** any `fontSize` below 20 on a screen the user reads. `fontSize: 16` looks fine on a desk monitor at 60cm and unreadable at 10ft.
 
-### Platform Typefaces
+---
 
-Use the platform's optimized system font:
-- **tvOS**: San Francisco (SF Pro Display / SF Pro Text)
-- **Android TV / Fire TV**: Roboto
-- **Fallbacks / multi-script**: Inter, Noto Sans
+## Line height and letter spacing
 
-### Line and Character Spacing
+Line height is a _multiplier_ of font size.
 
-Line height values are **multipliers** of font size (e.g., 1.4x means line-height = 1.4 × fontSize).
+| Context                | Line height | Letter spacing | Notes                                        |
+| ---------------------- | ----------- | -------------- | -------------------------------------------- |
+| Paragraphs / long-form | 1.4×        | +0.4           | Reading                                      |
+| Menus / nav items      | 1.2×        | +0.5           | Scanning                                     |
+| Display titles (40+)   | 1.15×       | -0.4 to -0.8   | Tighten; large sizes amplify default spacing |
 
-| Context | Line Height | Letter Spacing | Use |
-|---|---|---|---|
-| Content (paragraphs) | 1.4x | +0.4px | Long-form reading |
-| Navigation (menus) | 1.2x | +0.5px | Menu items, scanning |
-| Display (large text) | 1.15x | -0.4px to -0.8px | Hero text, titles |
+Negative tracking on display sizes prevents airy gaps. Don't apply below ~40px.
 
-Negative tracking for large titles: huge sizes amplify default spacing, so tighten slightly to avoid airy gaps.
+---
 
-### Text Rendering Rules
+## Platform typefaces
 
-- Sentence case over ALL CAPS for body/captions (caps reduce word shape recognition).
-- Tile titles: max 2 lines + `ellipsizeMode="tail"`.
-- Avoid ultra-light/ultra-thin weights — shimmer on LCDs, bloom on OLEDs.
-- For long localized titles: gentle marquee on focus only, never by default.
+Use the platform system font unless the brand requires otherwise.
 
-### Text Over Images
+| Platform                | System font                                  |
+| ----------------------- | -------------------------------------------- |
+| tvOS                    | San Francisco (SF Pro Display / SF Pro Text) |
+| Android TV              | Roboto                                       |
+| Fire TV / Vega          | Amazon Ember                                 |
+| Cross-platform fallback | Inter, Noto Sans                             |
 
-Text can vanish against complex backgrounds. Use:
+Avoid `fontWeight: '100'` or `'200'`. They shimmer on LCDs and bloom on OLEDs.
 
-```js
+---
+
+## Text rendering rules
+
+- Tile titles: `numberOfLines={2}` + `ellipsizeMode="tail"`. Without these, titles overflow into siblings.
+- Sentence case for body / captions. ALL CAPS reduces word-shape recognition.
+- Long localised titles: marquee on focus only, never by default.
+
+### Text over images / video
+
+Plain text vanishes against complex backgrounds. Use shadow + a dark gradient or blur underlay:
+
+```ts
 const readableOnImage = {
-  color: '#FFF',
-  textShadowColor: 'rgba(0,0,0,0.35)',
+  color: "#FFF",
+  textShadowColor: "rgba(0,0,0,0.35)",
   textShadowOffset: { width: 0, height: 1 },
   textShadowRadius: 2,
 };
 ```
 
-For subtitles/over-video UI: combine shadow + thin stroke outline at low opacity. Don't crank shadow blur.
+For subtitles or persistent text over video, combine shadow with a low-opacity stroke. Cap `textShadowRadius` at ~3 — beyond that, text turns smeary.
 
-## Color and Contrast
+---
 
-### Contrast Ratios
+## Color and contrast
 
-- Normal text: >= 4.5:1
-- Core UI (menus, buttons, captions over images): >= 7:1
-- Avoid pure #FFFFFF on #000000 for entire screens (eye fatigue, HDR glow).
-- Use near-white and near-black for base UI; reserve extremes for short-lived highlights.
-- Focus indicators must use **multi-cue**: color + border/outline + mild scale.
+### Contrast ratios
 
-**Verify before ship:** spot-check every text-on-background pair against these ratios (4.5:1 normal, 7:1 core UI). Don't trust the design comp — TV gamma and ambient glare push borderline pairs below threshold once the app actually renders on hardware.
+| UI role                                        | Minimum ratio                                           |
+| ---------------------------------------------- | ------------------------------------------------------- |
+| Normal text                                    | 4.5:1                                                   |
+| Core UI (menus, buttons, captions over images) | 7:1                                                     |
+| Focus indicator                                | as high as possible (e.g. `#00D4FF` is 11.3:1 vs black) |
 
-### HDR Considerations
+Pure `#FFFFFF` on `#000000` is 21:1 but causes eye fatigue on sustained reading and HDR bloom. Use near-white (`#E5E5E7`) and near-black (`#1a1a1a`) as base; reserve extremes for short-lived highlights.
 
-- Keep UI whites around 80-90% luminance; avoid hard #FFFFFF for persistent text.
-- Cap highlight intensity (focus glow, selection chips) to prevent blooming against HDR content.
-- Test both SDR and HDR modes; ship a palette that doesn't collapse in either.
+### Recommended palette (with computed ratios)
 
-### Ambient Light Adaptation
+| Purpose        | Value     | vs `#000` | vs `#1a1a1a` |
+| -------------- | --------- | --------- | ------------ |
+| Primary text   | `#FFFFFF` | 21:1      | 17.8:1       |
+| Secondary text | `#E5E5E7` | 18.5:1    | 15.7:1       |
+| Tertiary text  | `#A1A1AA` | 8.6:1     | 7.3:1        |
+| Disabled text  | `#6B7280` | 4.2:1     | 3.6:1        |
+| Primary accent | `#007AFF` | 8.2:1     | 7.0:1        |
+| Focus border   | `#00D4FF` | 11.3:1    | 9.6:1        |
+| Success        | `#34C759` | 9.8:1     | 8.3:1        |
+| Warning        | `#FF9500` | 7.1:1     | 6.0:1        |
+| Danger         | `#FF3B30` | 5.9:1     | 5.0:1        |
 
-| Environment | Background | Primary Text | Secondary Text | Accent | Min Contrast |
-|---|---|---|---|---|---|
-| Bright room | #000000 | #FFFFFF | #E5E5E7 | #007AFF | 7:1 |
-| Dim room | #1a1a1a | #E5E5E7 | #B3B3B3 | #5AC8FA | 4.5:1 |
-| Dark room | #2a2a2a | #D1D1D6 | #8E8E93 | #64D2FF | 3:1 |
+### Multi-cue focus state
 
-### Color Palette with Contrast Ratios
+Every focus indicator combines colour + border/outline + scale. Colour alone fails for color-deficient users and on washed-out displays.
 
-| Purpose | Value | vs Black | vs #1a1a1a | Use Case |
-|---|---|---|---|---|
-| Primary text | #FFFFFF | 21:1 | 17.8:1 | Body, headings, critical info |
-| Secondary text | #E5E5E7 | 18.5:1 | 15.7:1 | Labels, metadata |
-| Tertiary text | #A1A1AA | 8.6:1 | 7.3:1 | Timestamps, auxiliary |
-| Disabled text | #6B7280 | 4.2:1 | 3.6:1 | Inactive (use sparingly) |
-| Primary accent | #007AFF | 8.2:1 | 7.0:1 | Links, CTAs, selected states |
-| Focus border | #00D4FF | 11.3:1 | 9.6:1 | Focus indicators |
-| Success | #34C759 | 9.8:1 | 8.3:1 | Confirmations |
-| Warning | #FF9500 | 7.1:1 | 6.0:1 | Warnings |
-| Danger | #FF3B30 | 5.9:1 | 5.0:1 | Errors, destructive actions |
+```jsx
+<Pressable
+  style={({ focused }) => ({
+    backgroundColor: focused ? '#FFF' : '#222',
+    borderWidth: focused ? 2 : 0,
+    borderColor: '#00D4FF',
+    transform: [{ scale: focused ? 1.04 : 1 }],
+  })}
+>
+```
+
+**Watch out for:** focused-state styles changing only `backgroundColor` or only colour. Without a border or scale change, low-contrast TVs and color-deficient users can't tell what's selected.
+
+---
+
+## HDR considerations
+
+- Cap UI whites at 80–90% luminance. Pure `#FFFFFF` for persistent text causes HDR glow.
+- Cap focus-glow / selection-chip intensity to prevent blooming against HDR content.
+- Test SDR and HDR. Ship a palette that holds in both.
+
+If hardware testing isn't available, render screens over HDR backdrop content and confirm UI doesn't disappear into highlights.
+
+---
+
+## Ambient light
+
+Three environments and starting palettes:
+
+| Environment | Background | Primary text | Secondary text | Accent    | Min contrast |
+| ----------- | ---------- | ------------ | -------------- | --------- | ------------ |
+| Bright room | `#000000`  | `#FFFFFF`    | `#E5E5E7`      | `#007AFF` | 7:1          |
+| Dim room    | `#1a1a1a`  | `#E5E5E7`    | `#B3B3B3`      | `#5AC8FA` | 4.5:1        |
+| Dark room   | `#2a2a2a`  | `#D1D1D6`    | `#8E8E93`      | `#64D2FF` | 3:1          |
+
+For apps with manual "night mode" or system-driven theming, these three rows are starting points for the three modes.
+
+---
+
+## Hand off to the human reviewer
+
+**Run the static helper first:** `node references/scripts/audit.js src --only typography`. Catches grep-able typography issues (small font sizes, ultra-thin weights, white-on-black, ALL CAPS, missing `numberOfLines`, large `textShadowRadius`, implausible `lineHeight`, negative tracking on small fonts, WCAG contrast below 4.5:1 for same-object pairs). It's a helper, not a full review — debug overlays, button labels, and test fixtures can legitimately violate the rules; inherited / cross-component contrast pairs need hardware spot-checks.
+
+The remaining checks need hardware, distance, and human eyes. Surface to the user when the review is complete:
+
+- Spot-check inherited / cross-component text-on-background pairs on hardware. The audit only catches pairs in the same style object; styles applied through composition need an eyes-on review. TV gamma and ambient glare also push borderline pairs below threshold. _(human — hardware)_
+- Toggle HDR on a supporting TV; confirm whites don't bloom and focus indicators remain visible. _(human — hardware)_
+- View screens at 10ft with lights on **and** lights off. Contrast that works in one condition fails in the other. Leaning forward = type or contrast is wrong. _(human — couch test)_
