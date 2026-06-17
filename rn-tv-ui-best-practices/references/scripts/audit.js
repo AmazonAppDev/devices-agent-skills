@@ -73,6 +73,21 @@ for (let i = 0; i < args.length; i++) {
 if (roots.length === 0) roots.push("src");
 
 const ALL_SECTIONS = ["focus", "input", "layout", "typography"];
+
+function validateSectionList(name, list) {
+  if (!list) return;
+  const unknown = list.filter((s) => !ALL_SECTIONS.includes(s));
+  if (unknown.length > 0) {
+    console.error(
+      `${name}: unknown section(s): ${unknown.join(", ")}\n` +
+        `Valid sections: ${ALL_SECTIONS.join(", ")}`
+    );
+    process.exit(2);
+  }
+}
+validateSectionList("--only", only);
+validateSectionList("--skip", skip);
+
 const sections = ALL_SECTIONS.filter((s) => {
   if (only && !only.includes(s)) return false;
   if (skip && skip.includes(s)) return false;
@@ -568,8 +583,9 @@ for (const root of roots) {
           }
         }
 
-        const colorMatch = /\bcolor\s*:\s*['"`](#[0-9a-fA-F]{3,8})['"`]/.exec(body);
-        const bgMatch = /\bbackgroundColor\s*:\s*['"`](#[0-9a-fA-F]{3,8})['"`]/.exec(body);
+        // 3- or 6-digit hex only — parseHex / WCAG luminance need RGB, not RGBA.
+        const colorMatch = /\bcolor\s*:\s*['"`](#[0-9a-fA-F]{3}|#[0-9a-fA-F]{6})['"`]/.exec(body);
+        const bgMatch = /\bbackgroundColor\s*:\s*['"`](#[0-9a-fA-F]{3}|#[0-9a-fA-F]{6})['"`]/.exec(body);
         if (colorMatch && bgMatch) {
           const ratio = contrastRatio(colorMatch[1], bgMatch[1]);
           if (ratio !== null && ratio < CONTRAST_THRESHOLD) {
