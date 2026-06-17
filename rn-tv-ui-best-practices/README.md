@@ -1,12 +1,10 @@
 # rn-tv-ui-best-practices
 
-An agent skill for building React Native TV applications with best-practice UI patterns covering focus management, navigation, layout, typography, color, and keyboard handling.
+An agent skill for building and reviewing React Native TV applications. Covers focus management, layout patterns, motion, typography & contrast, input handling, and Vega-specific gotchas.
 
 ## Attribution
 
-Based on "The Ultimate Guide to React Native TV Development" (2025), co-authored by Amazon and Callstack.
-
-Book: https://reactnativetv.com
+Based on _The Ultimate Guide to React Native TV Development_, co-authored by Amazon and Callstack — <https://www.callstack.com/ebooks/the-ultimate-guide-to-react-native-tv-development>.
 
 ## Authors
 

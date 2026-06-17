@@ -31,15 +31,13 @@ Native engines on both tvOS (precision-based) and Android TV (proximity-based) h
 
 ## Directional navigation conventions
 
-TV input is a 9-button remote, not a touch surface. **Tap-anywhere doesn't exist; focus moves along directional axes.** Code review starts from this constraint:
+TV input is a 9-button remote; tap-anywhere doesn't exist. Focus moves along directional axes:
 
 - Left/right within rows. Up/down between sections.
 - Focus flows predictably — no dead ends, no surprise jumps.
 - From the home screen, the path to the first "Play" action should be short. Count the D-pad presses.
 - When overlays/modals appear, focus is trapped inside until dismissed.
 - Back returns to the previous focused state, not a default. See *Back navigation and focus restoration* below.
-
-These conventions inform every rule in the rest of this file. If a layout violates them, no amount of `TVFocusGuideView` patching will recover the experience.
 
 ---
 
@@ -341,8 +339,6 @@ function ConfirmModal({ visible, onClose, returnRef }) {
 ```
 
 For full screens, wrap the section in a `TVFocusGuideView` with `autoFocus` — the guide remembers the last focused child per scope and restores it on re-entry.
-
-> **Vega:** focus is **not** auto-restored across screen transitions. Neither `@amazon-devices/react-navigation__stack` nor `@amazon-devices/react-navigation__native-stack` does this for you. Implement by saving the last-focused ref per screen and calling `FocusManager.focus(findNodeHandle(savedRef.current))` inside `useFocusEffect`. See `vega-specifics.md`.
 
 ---
 

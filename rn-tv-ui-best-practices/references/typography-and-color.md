@@ -5,7 +5,7 @@ tags: typography, font-size, line-height, letter-spacing, contrast, color, palet
 
 # Typography and Color
 
-Font sizes, line height, contrast ratios, and palette choices calibrated for 10ft TV viewing. Mobile defaults fail on TV — this file is the source of "what numbers to use."
+Font sizes, line height, contrast ratios, and palette choices calibrated for 10ft TV viewing. Mobile defaults fail on TV.
 
 ---
 
