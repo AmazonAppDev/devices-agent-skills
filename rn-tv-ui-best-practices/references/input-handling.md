@@ -8,6 +8,8 @@ tags: remote, d-pad, rcu, select, back, play, pause, voice, mic, textinput, keyb
 Remote button vocabulary, expected app behaviour per button, and patterns for `TextInput` (system keyboard, custom keyboard, voice, QR auth).
 
 > **Vega:** `useTVEventHandler` is observe-only and imports from `@amazon-devices/react-native-kepler`. `manifest.toml` must declare `com.amazon.inputd.service` or no events fire. See [`vega-specifics.md`](./vega-specifics.md).
+>
+> **Vega:** `manifest.toml` must also include `[[wants.service]] id = "com.amazon.inputmethod.service"` for the system keyboard to appear when a `TextInput` gains focus. Without it, the input accepts focus but no keyboard surfaces — silently. See [`vega-specifics.md`](./vega-specifics.md).
 
 ---
 
