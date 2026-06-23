@@ -8,13 +8,33 @@ This repository contains skills that work across open-source frameworks, tools a
 
 | Skill | Description |
 |-------|-------------|
-| [vega-multi-tv-migration](vega-multi-tv-migration/SKILL.md) | Migrate Vega OS (Fire TV) apps to multi-platform React Native monorepo supporting Android TV, Apple TV, and more |
+| [vega-multi-tv-migration](skills/vega-multi-tv-migration/SKILL.md) | Migrate Vega OS (Fire TV) apps to multi-platform React Native monorepo supporting Android TV, Apple TV, and more |
 
 ## Installation
 
-### 1. Install via skills.sh (Recommended)
+### 1. Install via GitHub CLI
 
-The quickest way to install a skill is with the [skills.sh](https://skills.sh/) CLI. No setup needed, just run it with `npx`.
+Install all skills from this repo:
+
+```bash
+gh skill install AmazonAppDev/devices-agent-skills --all
+```
+
+Install the Vega multi-TV migration skill for Codex at project scope:
+
+```bash
+gh skill install AmazonAppDev/devices-agent-skills vega-multi-tv-migration --agent codex --scope project
+```
+
+Install it with the universal agent target:
+
+```bash
+gh skill install AmazonAppDev/devices-agent-skills vega-multi-tv-migration --agent universal --scope project
+```
+
+### 2. Install via skills.sh
+
+You can also install a skill with the [skills.sh](https://skills.sh/) CLI. No setup needed, just run it with `npx`.
 
 Install all skills from this repo:
 
@@ -30,9 +50,9 @@ npx skills add AmazonAppDev/devices-agent-skills --skill vega-multi-tv-migration
 
 For more options, see the [skills CLI documentation](https://skills.sh/docs/cli).
 
-### 2. Manual Installation
+### 3. Manual Installation
 
-1. Copy a skill directory into your AI assistant's skills folder (e.g. `~/.kiro/skills/` for Kiro).
+1. Copy a directory from `skills/` into your AI assistant's skills folder (e.g. `~/.kiro/skills/` for Kiro).
 2. The assistant will automatically discover and activate the skill based on your conversation.
 
 ## Usage
