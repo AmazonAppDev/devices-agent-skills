@@ -217,8 +217,14 @@ Horizontal rows of cards. Left/right moves within a row (within a category); up/
 // drop them when migrating to FlashList. On FlashList v1 use estimatedItemSize + getItemType;
 // on FlashList v2+ drop estimatedItemSize too (deprecated) — see "Tuning notes" below.
 import { FlatList } from "react-native";
+import { useCallback } from "react";
 
 function Row({ title, data, onSelect }) {
+  const renderItem = useCallback(
+    ({ item }) => <Card item={item} onPress={() => onSelect(item)} />,
+    [onSelect]
+  );
+
   return (
     <View>
       <Text style={styles.rowHeader}>{title}</Text>
@@ -231,9 +237,7 @@ function Row({ title, data, onSelect }) {
         initialNumToRender={6}
         maxToRenderPerBatch={6}
         windowSize={5}
-        renderItem={({ item }) => (
-          <Card item={item} onPress={() => onSelect(item)} />
-        )}
+        renderItem={renderItem}
       />
     </View>
   );
@@ -245,8 +249,14 @@ function Row({ title, data, onSelect }) {
 // Drop FlatList tuning props (windowSize, initialNumToRender, etc.) — they don't apply.
 // On FlashList v2+, drop estimatedItemSize too (deprecated). See "Tuning notes" below.
 import { FlashList } from "@shopify/flash-list";
+import { useCallback } from "react";
 
 function Row({ title, data, onSelect }) {
+  const renderItem = useCallback(
+    ({ item }) => <Card item={item} onPress={() => onSelect(item)} />,
+    [onSelect]
+  );
+
   return (
     <View>
       <Text style={styles.rowHeader}>{title}</Text>
@@ -255,9 +265,7 @@ function Row({ title, data, onSelect }) {
         horizontal
         showsHorizontalScrollIndicator={false}
         estimatedItemSize={220}
-        renderItem={({ item }) => (
-          <Card item={item} onPress={() => onSelect(item)} />
-        )}
+        renderItem={renderItem}
       />
     </View>
   );

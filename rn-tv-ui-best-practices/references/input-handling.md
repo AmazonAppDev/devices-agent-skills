@@ -55,6 +55,7 @@ iOS-only types (`ascii-capable`, `numbers-and-punctuation`, `web-search`) and An
 ```jsx
 <TextInput
   placeholder="Password"
+  keyboardType="default"
   secureTextEntry
   textContentType="password"
   autoComplete="password"
@@ -65,6 +66,7 @@ iOS-only types (`ascii-capable`, `numbers-and-punctuation`, `web-search`) and An
 ```jsx
 <TextInput
   placeholder="Search shows"
+  keyboardType="default"
   value={query}
   onChangeText={setQuery}
   returnKeyType="search"
@@ -100,6 +102,7 @@ function SearchScreen({ onSearch }) {
     <View>
       <TextInput
         placeholder="Search TV shows..."
+        keyboardType="default"
         value={query}
         onChangeText={(text) => {
           queryRef.current = text;

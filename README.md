@@ -51,4 +51,4 @@ See [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md).
 
 ## License
 
-See individual skill directories for details.
+This project is licensed under the MIT License. See [LICENSE](LICENSE).

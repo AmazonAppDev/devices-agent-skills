@@ -126,7 +126,7 @@ Every modal, dialog, and overlay must trap focus on all four sides. Without trap
 
 ## 3. `hasTVPreferredFocus` — set initial focus
 
-**Runtime:** all TV runtimes, with different component coverage. On `react-native-tvos`, accepted by `View`, `Pressable`, `TouchableHighlight`, `TouchableOpacity`, `TouchableWithoutFeedback`, `TouchableNativeFeedback`, `TextInput`, `Button`, `TVFocusGuideView`, `TVTextScrollView`. Stock React Native supports it on a much smaller subset — if the project is on stock RN, flag this. On Vega, see [`vega-specifics.md`](./vega-specifics.md).
+**Runtime:** all TV runtimes, with different component coverage. On `react-native-tvos`, accepted by `View`, `Pressable`, `TouchableHighlight`, `TouchableOpacity`, `TouchableWithoutFeedback`, `TouchableNativeFeedback` (these last two accept `hasTVPreferredFocus` but do not fire `onFocus`/`onBlur` - prefer `Pressable` or `TouchableOpacity` for focus-aware components), `TextInput`, `Button`, `TVFocusGuideView`, `TVTextScrollView`. Stock React Native supports it on a much smaller subset — if the project is on stock RN, flag this. On Vega, see [`vega-specifics.md`](./vega-specifics.md).
 
 Tells the engine "start here" when the screen first renders.
 

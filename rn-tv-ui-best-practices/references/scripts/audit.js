@@ -12,8 +12,8 @@
  *
  * Sections:
  *   focus       — navigation-and-focus.md  (5 checks)
- *   input       — input-handling.md        (4 checks)
- *   layout      — layout-patterns.md       (4 checks)
+ *   input       — input-handling.md        (7 checks)
+ *   layout      — layout-patterns.md       (6 checks)
  *   typography  — typography-and-color.md  (9 checks)
  *
  * Usage:
@@ -37,6 +37,9 @@
  *   - Runtime detection (used by focus and input checks) reads package.json
  *     once at the project root determined from the first scan path's parent
  *     walk. Monorepos with per-package runtimes will only see the root.
+ *     For monorepos, run the audit once per workspace package:
+ *       node audit.js apps/expo-multi-tv/src --only focus
+ *       node audit.js apps/vega/src --only input
  */
 
 const fs = require("node:fs");
@@ -209,13 +212,20 @@ const findings = {
   textInputNoKeyboardType: [],
   passwordWithoutSecureEntry: [],
   searchWithoutSubmit: [],
+  showSoftInputOffNoCustomKeyboard: [],
   vegaUseTVEventHandlerWrongImport: [],
+  vegaManifestMissingInputd: [],
+  vegaManifestMissingInputmethod: [],
 
   // layout
   scrollViewWithMap: [],
   flashListBadProps: [],
   inlineRenderItem: [],
   hardcodedResolution: [],
+  longTransitionDuration: [],
+
+  // focus (vega-specific)
+  vegaWrongFlashListImport: [],
 
   // typography
   fontSizeTooSmall: [],
@@ -235,6 +245,7 @@ const FLASHLIST_BAD_PROPS = [
   "initialNumToRender",
   "maxToRenderPerBatch",
   "updateCellsBatchingPeriod",
+  "removeClippedSubviews",
 ];
 
 const TV_RESOLUTIONS = {
@@ -258,9 +269,12 @@ const isInput = sections.includes("input");
 const isLayout = sections.includes("layout");
 const isTypo = sections.includes("typography");
 
+let missingRoots = 0;
+
 for (const root of roots) {
   if (!fs.existsSync(root)) {
-    console.error(`Path not found: ${root}`);
+    console.error(`ERROR: scan root not found: ${root}`);
+    missingRoots++;
     continue;
   }
 
@@ -285,10 +299,10 @@ for (const root of roots) {
     let firstWhiteLine = null;
     let firstBlackLine = null;
 
-    // Input check 4: Vega useTVEventHandler import.
-    if (isInput && projectRuntime === "vega") {
+    // Input/Focus check: Vega TV APIs imported from wrong package.
+    if ((isInput || isFocus) && projectRuntime === "vega") {
       const importRe =
-        /import\s*\{[^}]*\b(useTVEventHandler|TVEventHandler)\b[^}]*\}\s*from\s*['"]react-native['"]/g;
+        /import\s*\{[^}]*\b(useTVEventHandler|TVEventHandler|TVFocusGuideView)\b[^}]*\}\s*from\s*['"]react-native['"]/g;
       let m;
       while ((m = importRe.exec(content)) !== null) {
         const lineNo = content.slice(0, m.index).split("\n").length;
@@ -297,6 +311,16 @@ for (const root of roots) {
           line: lineNo,
           snippet: lines[lineNo - 1].trim(),
         });
+      }
+    }
+
+    // Vega: FlashList imported from @shopify/flash-list (wrong package on Vega).
+    if ((isLayout || isFocus) && projectRuntime === "vega") {
+      const wrongFlashRe = /import\s*\{[^}]*\}\s*from\s*['"]@shopify\/flash-list['"]/g;
+      let m;
+      while ((m = wrongFlashRe.exec(content)) !== null) {
+        const lineNo = content.slice(0, m.index).split("\n").length;
+        findings.vegaWrongFlashListImport.push({ file, line: lineNo, snippet: lines[lineNo - 1].trim() });
       }
     }
 
@@ -319,9 +343,11 @@ for (const root of roots) {
         }
 
         if (/\bnextFocus(Up|Down|Left|Right|Forward)\b/.test(line)) {
-          const fileGated = /Platform\.OS\s*===\s*['"]android['"]/.test(content);
-          if (!fileGated) {
-            findings.ungatedNextFocus.push({ file, line: lineNo, snippet: line.trim() });
+          if (projectRuntime === "stock" || projectRuntime === "unknown") {
+            const fileGated = /Platform\.OS\s*===\s*['"]android['"]/.test(content);
+            if (!fileGated) {
+              findings.ungatedNextFocus.push({ file, line: lineNo, snippet: line.trim() });
+            }
           }
         }
 
@@ -345,13 +371,15 @@ for (const root of roots) {
         }
 
         if (/<Touchable(NativeFeedback|WithoutFeedback)\b/.test(line)) {
-          const window = lines.slice(i, Math.min(i + 6, lines.length)).join("\n");
-          if (/\bon(Focus|Blur)\s*=/.test(window)) {
-            findings.unsupportedTouchableFocus.push({
-              file,
-              line: lineNo,
-              snippet: line.trim(),
-            });
+          if (projectRuntime === "stock" || projectRuntime === "unknown") {
+            const window = lines.slice(i, Math.min(i + 6, lines.length)).join("\n");
+            if (/\bon(Focus|Blur)\s*=/.test(window)) {
+              findings.unsupportedTouchableFocus.push({
+                file,
+                line: lineNo,
+                snippet: line.trim(),
+              });
+            }
           }
         }
       }
@@ -374,7 +402,7 @@ for (const root of roots) {
             snippet: line.trim(),
           });
         }
-        if (PASSWORD_PLACEHOLDER.test(element) && !/\bsecureTextEntry\b/.test(element)) {
+        if (PASSWORD_PLACEHOLDER.test(element) && (!/\bsecureTextEntry\b/.test(element) || /\bsecureTextEntry\s*=\s*\{?\s*false\s*\}?/.test(element))) {
           findings.passwordWithoutSecureEntry.push({
             file,
             line: lineNo,
@@ -383,14 +411,25 @@ for (const root of roots) {
         }
         if (
           SEARCH_PLACEHOLDER.test(element) &&
-          !/\bonSubmitEditing\s*=/.test(element) &&
-          !/\breturnKeyType\s*=/.test(element)
+          !/\bonSubmitEditing\s*=/.test(element)
         ) {
           findings.searchWithoutSubmit.push({
             file,
             line: lineNo,
             snippet: line.trim(),
           });
+        }
+
+        if (/\bshowSoftInputOnFocus\s*=\s*\{?\s*false/.test(element)) {
+          // Look ahead for a custom keyboard component in the next ~20 lines
+          const lookAhead = lines.slice(i, Math.min(i + 25, lines.length)).join("\n");
+          if (!/CustomKeyboard|KeyboardView|<Keyboard\b/.test(lookAhead)) {
+            findings.showSoftInputOffNoCustomKeyboard.push({
+              file,
+              line: lineNo,
+              snippet: line.trim(),
+            });
+          }
         }
       }
 
@@ -460,6 +499,19 @@ for (const root of roots) {
             value: parseInt(heightMatch[1], 10),
             snippet: line.trim(),
           });
+        }
+
+        const durMatch = /\bduration\s*[:=]\s*(\d+)/.exec(line);
+        if (durMatch) {
+          const dur = parseInt(durMatch[1], 10);
+          if (dur >= 300) {
+            findings.longTransitionDuration.push({
+              file,
+              line: lineNo,
+              duration: dur,
+              snippet: line.trim(),
+            });
+          }
         }
       }
 
@@ -603,6 +655,27 @@ for (const root of roots) {
   }
 }
 
+// ---- Vega manifest checks ----
+
+if (isInput && projectRuntime === "vega") {
+  // Look for manifest.toml relative to the package.json we found
+  const manifestDir = pkgPath ? path.dirname(pkgPath) : roots[0];
+  const manifestPath = path.join(manifestDir, "manifest.toml");
+  if (fs.existsSync(manifestPath)) {
+    const manifest = fs.readFileSync(manifestPath, "utf8");
+    if (!/com\.amazon\.inputd\.service/.test(manifest)) {
+      findings.vegaManifestMissingInputd.push({ file: manifestPath });
+    }
+    if (!/com\.amazon\.inputmethod\.service/.test(manifest)) {
+      findings.vegaManifestMissingInputmethod.push({ file: manifestPath });
+    }
+  } else {
+    // No manifest.toml found — both services are implicitly missing
+    findings.vegaManifestMissingInputd.push({ file: manifestDir + "/manifest.toml (not found)" });
+    findings.vegaManifestMissingInputmethod.push({ file: manifestDir + "/manifest.toml (not found)" });
+  }
+}
+
 // ---- output ----
 
 let total = 0;
@@ -624,6 +697,12 @@ function emitList(list, fmt) {
 
 console.log(`Sections: ${sections.join(", ")}`);
 console.log(`Detected runtime: ${projectRuntime}`);
+if (projectRuntime === "unknown") {
+  console.warn(
+    "WARNING: Could not detect runtime. If this is a monorepo, run the audit per workspace package\n" +
+      "  (e.g. node audit.js apps/my-app/src) so runtime detection reads the correct package.json."
+  );
+}
 
 if (isFocus) {
   console.log("\n══════════ FOCUS ══════════");
@@ -643,8 +722,8 @@ if (isFocus) {
     "nextFocus* without Platform.OS === 'android' gate (stock RN only)",
     findings.ungatedNextFocus.length
   );
-  if (findings.ungatedNextFocus.length > 0 && projectRuntime !== "stock") {
-    console.log(`  (project runtime is ${projectRuntime} — gating is not required; ignore unless stock RN)`);
+  if (projectRuntime === "unknown") {
+    console.log("  (runtime is unknown — reporting as precaution; safe on react-native-tvos and Vega)");
   }
   emitList(findings.ungatedNextFocus, (f) => `  ${f.file}:${f.line}\n    ${f.snippet}`);
 
@@ -659,11 +738,13 @@ if (isFocus) {
   }
 
   header(
-    "TouchableNativeFeedback / TouchableWithoutFeedback with onFocus / onBlur",
+    "TouchableNativeFeedback / TouchableWithoutFeedback with onFocus / onBlur (stock RN only)",
     findings.unsupportedTouchableFocus.length
   );
-  if (findings.unsupportedTouchableFocus.length > 0) {
-    console.log("  (these two variants do not fire focus events; use Pressable / TouchableOpacity / TouchableHighlight)");
+  if (projectRuntime === "unknown") {
+    console.log("  (runtime is unknown — reporting as precaution; on react-native-tvos/Vega these have partial focus support)");
+  } else if (findings.unsupportedTouchableFocus.length > 0) {
+    console.log("  (these two variants do not fire focus events on stock RN; use Pressable / TouchableOpacity / TouchableHighlight)");
   }
   emitList(findings.unsupportedTouchableFocus, (f) => `  ${f.file}:${f.line}\n    ${f.snippet}`);
 }
@@ -678,13 +759,22 @@ if (isInput) {
   emitList(findings.passwordWithoutSecureEntry, (f) => `  ${f.file}:${f.line}\n    ${f.snippet}`);
 
   header(
-    "Search-shaped input without onSubmitEditing / returnKeyType",
+    "Search-shaped input without onSubmitEditing",
     findings.searchWithoutSubmit.length
   );
   emitList(findings.searchWithoutSubmit, (f) => `  ${f.file}:${f.line}\n    ${f.snippet}`);
 
   header(
-    "Vega: useTVEventHandler imported from 'react-native' (wrong package)",
+    "showSoftInputOnFocus={false} without custom keyboard nearby",
+    findings.showSoftInputOffNoCustomKeyboard.length
+  );
+  if (findings.showSoftInputOffNoCustomKeyboard.length > 0) {
+    console.log("  (suppressing the system keyboard without rendering a replacement leaves input unusable)");
+  }
+  emitList(findings.showSoftInputOffNoCustomKeyboard, (f) => `  ${f.file}:${f.line}\n    ${f.snippet}`);
+
+  header(
+    "Vega: TV API imported from 'react-native' (wrong package)",
     findings.vegaUseTVEventHandlerWrongImport.length
   );
   if (projectRuntime !== "vega") {
@@ -696,6 +786,26 @@ if (isInput) {
     emitList(findings.vegaUseTVEventHandlerWrongImport, (f) =>
       `  ${f.file}:${f.line}\n    ${f.snippet}`
     );
+  }
+
+  header(
+    "Vega: manifest.toml missing com.amazon.inputd.service (remote events won't fire)",
+    findings.vegaManifestMissingInputd.length
+  );
+  if (projectRuntime !== "vega") {
+    console.log("  not applicable — project is not on Vega");
+  } else {
+    emitList(findings.vegaManifestMissingInputd, (f) => `  ${f.file}`);
+  }
+
+  header(
+    "Vega: manifest.toml missing com.amazon.inputmethod.service (keyboard won't appear)",
+    findings.vegaManifestMissingInputmethod.length
+  );
+  if (projectRuntime !== "vega") {
+    console.log("  not applicable — project is not on Vega");
+  } else {
+    emitList(findings.vegaManifestMissingInputmethod, (f) => `  ${f.file}`);
   }
 }
 
@@ -729,6 +839,30 @@ if (isLayout) {
   emitList(findings.hardcodedResolution, (f) =>
     `  ${f.file}:${f.line}  ${f.dimension}: ${f.value}\n    ${f.snippet}`
   );
+
+  header(
+    "Transition/animation duration >= 300ms (trim for TV input latency)",
+    findings.longTransitionDuration.length
+  );
+  if (findings.longTransitionDuration.length > 0) {
+    console.log("  (TV input pipelines add 50-100ms latency; keep transitions under 200-300ms)");
+  }
+  emitList(findings.longTransitionDuration, (f) =>
+    `  ${f.file}:${f.line}  duration: ${f.duration}ms\n    ${f.snippet}`
+  );
+
+  header(
+    "Vega: FlashList imported from @shopify/flash-list (wrong package)",
+    findings.vegaWrongFlashListImport.length
+  );
+  if (projectRuntime !== "vega") {
+    console.log("  not applicable — project is not on Vega");
+  } else {
+    if (findings.vegaWrongFlashListImport.length > 0) {
+      console.log("  (use @amazon-devices/shopify__flash-list on Vega)");
+    }
+    emitList(findings.vegaWrongFlashListImport, (f) => `  ${f.file}:${f.line}\n    ${f.snippet}`);
+  }
 }
 
 if (isTypo) {
@@ -801,7 +935,10 @@ if (isTypo) {
 }
 
 console.log(`\nTotal: ${total} finding(s) across ${roots.join(", ")}`);
+if (missingRoots > 0) {
+  console.error(`\n${missingRoots} scan root(s) not found — no files were scanned from those paths.`);
+}
 console.log(
   "This audit only catches statically detectable patterns. Many rules in the reference files require judgement, hardware, or human review — a clean audit run is not the same as a correct app."
 );
-process.exit(total > 0 ? 1 : 0);
+process.exit(total > 0 || missingRoots > 0 ? 1 : 0);
