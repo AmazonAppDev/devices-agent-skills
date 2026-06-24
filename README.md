@@ -9,6 +9,7 @@ This repository contains skills that work across open-source frameworks, tools a
 | Skill | Description |
 |-------|-------------|
 | [vega-multi-tv-migration](skills/vega-multi-tv-migration/SKILL.md) | Migrate Vega OS (Fire TV) apps to multi-platform React Native monorepo supporting Android TV, Apple TV, and more |
+| [rn-tv-ui-best-practices](skills/rn-tv-ui-best-practices/SKILL.md) | React Native TV UI best practices for tvOS, Android TV, Fire TV, and Vega OS — focus management, layouts, typography, and remote/D-pad navigation |
 
 ## Installation
 
@@ -46,6 +47,7 @@ Install a specific skill:
 
 ```bash
 npx skills add AmazonAppDev/devices-agent-skills --skill vega-multi-tv-migration
+npx skills add AmazonAppDev/devices-agent-skills --skill rn-tv-ui-best-practices
 ```
 
 For more options, see the [skills CLI documentation](https://skills.sh/docs/cli).
@@ -71,4 +73,4 @@ See [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md).
 
 ## License
 
-See individual skill directories for details.
+This project is licensed under the MIT License. See [LICENSE](LICENSE).
