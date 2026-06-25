@@ -2,7 +2,7 @@
 
 A collection of **Agent Skills** — structured knowledge packages that give AI assistants specialized capabilities and guided workflows. Skills follow the [Agent Skills specification](https://agentskills.io).
 
-This repository contains skills that work across open-source frameworks, tools and workflows that benefit from community input. For Amazon specific skills covering proprietary SDKs, APIs, and  workflows, see [amazon-devices-buildertools](https://github.com/AmazonAppDev/amazon-devices-buildertools).
+This repository contains skills that work across open-source frameworks, tools and workflows that benefit from community input. For Amazon specific skills covering proprietary SDKs, APIs, and  workflows, see [Amazon Devices Builder Tools for AI](https://developer.amazon.com/docs/vega/0.23/mcp-server.html)
 
 ## Available Skills
 
