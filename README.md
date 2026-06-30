@@ -21,17 +21,15 @@ Install all skills from this repo:
 gh skill install AmazonAppDev/devices-agent-skills --all
 ```
 
-Install the Vega multi-TV migration skill for Codex at project scope:
+Install a specific skill:
 
 ```bash
-gh skill install AmazonAppDev/devices-agent-skills vega-multi-tv-migration --agent codex --scope project
+gh skill install AmazonAppDev/devices-agent-skills vega-multi-tv-migration --agent <your-agent> --scope project
 ```
 
-Install it with the universal agent target:
+Replace `<your-agent>` with the agent you're using (e.g. `claude-code`, `kiro-cli`, `cursor`, `codex`, `github-copilot`). See the [full list of supported agents](https://cli.github.com/manual/gh_skill_install).
 
-```bash
-gh skill install AmazonAppDev/devices-agent-skills vega-multi-tv-migration --agent universal --scope project
-```
+If you run the command interactively (without `--agent`), the CLI will prompt you to select one.
 
 ### 2. Install via skills.sh
 
