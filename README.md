@@ -8,14 +8,32 @@ This repository contains skills that work across open-source frameworks, tools a
 
 | Skill | Description |
 |-------|-------------|
-| [vega-multi-tv-migration](vega-multi-tv-migration/SKILL.md) | Migrate Vega OS (Fire TV) apps to multi-platform React Native monorepo supporting Android TV, Apple TV, and more |
-| [rn-tv-ui-best-practices](rn-tv-ui-best-practices/SKILL.md) | React Native TV UI best practices for tvOS, Android TV, Fire TV, and Vega OS — focus management, layouts, typography, and remote/D-pad navigation |
+| [vega-multi-tv-migration](skills/vega-multi-tv-migration/SKILL.md) | Migrate Vega OS (Fire TV) apps to multi-platform React Native monorepo supporting Android TV, Apple TV, and more |
+| [rn-tv-ui-best-practices](skills/rn-tv-ui-best-practices/SKILL.md) | React Native TV UI best practices for tvOS, Android TV, Fire TV, and Vega OS — focus management, layouts, typography, and remote/D-pad navigation |
 
 ## Installation
 
-### 1. Install via skills.sh (Recommended)
+### 1. Install via GitHub CLI
 
-The quickest way to install a skill is with the [skills.sh](https://skills.sh/) CLI. No setup needed, just run it with `npx`.
+Install all skills from this repo:
+
+```bash
+gh skill install AmazonAppDev/devices-agent-skills --all
+```
+
+Install a specific skill:
+
+```bash
+gh skill install AmazonAppDev/devices-agent-skills vega-multi-tv-migration --agent <your-agent> --scope project
+```
+
+Replace `<your-agent>` with the agent you're using (e.g. `claude-code`, `kiro-cli`, `cursor`, `codex`, `github-copilot`). See the [full list of supported agents](https://cli.github.com/manual/gh_skill_install).
+
+If you run the command interactively (without `--agent`), the CLI will prompt you to select one.
+
+### 2. Install via skills.sh
+
+You can also install a skill with the [skills.sh](https://skills.sh/) CLI. No setup needed, just run it with `npx`.
 
 Install all skills from this repo:
 
@@ -32,9 +50,9 @@ npx skills add AmazonAppDev/devices-agent-skills --skill rn-tv-ui-best-practices
 
 For more options, see the [skills CLI documentation](https://skills.sh/docs/cli).
 
-### 2. Manual Installation
+### 3. Manual Installation
 
-1. Copy a skill directory into your AI assistant's skills folder (e.g. `~/.kiro/skills/` for Kiro).
+1. Copy a directory from `skills/` into your AI assistant's skills folder (e.g. `~/.kiro/skills/` for Kiro).
 2. The assistant will automatically discover and activate the skill based on your conversation.
 
 ## Usage
