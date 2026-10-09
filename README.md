@@ -10,6 +10,7 @@ This repository contains skills that work across open-source frameworks, tools a
 |-------|-------------|
 | [vega-multi-tv-migration](skills/vega-multi-tv-migration/SKILL.md) | Migrate Vega OS (Fire TV) apps to multi-platform React Native monorepo supporting Android TV, Apple TV, and more |
 | [rn-tv-ui-best-practices](skills/rn-tv-ui-best-practices/SKILL.md) | React Native TV UI best practices for tvOS, Android TV, Fire TV, and Vega OS — focus management, layouts, typography, and remote/D-pad navigation |
+| [playhead-safe-ai](skills/playhead-safe-ai/SKILL.md) | Build or review media AI features that answer from the viewer's current playback boundary without exposing future timeline data |
 
 ## Installation
 
