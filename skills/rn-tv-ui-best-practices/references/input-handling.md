@@ -156,7 +156,8 @@ Custom keyboards give layout control but force the user to learn a new layout. B
 ### Voice input
 
 - System keyboard supports dictation on tvOS (Siri Remote) and Android TV (mic on remote). If using the system keyboard, voice is already enabled — wait for the `TextInput` value to fill.
-- Custom keyboard + voice requires native code (`react-native-voice` is the common path). Requires microphone and speech-recognition permissions plus matching manifest entries.
+- Custom keyboard + voice requires native code, plus microphone and speech-recognition permissions and matching manifest entries. `react-native-voice` (`@react-native-voice/voice`) was the common path, but its GitHub repository is archived (read-only) and the package ships only iOS and Android native modules, so it has no Vega support.
+- Vega: there is no app-level speech-to-text API for custom recognition flows. Speech-to-text goes through the system keyboard: when a `TextInput` is focused, the keyboard shows a microphone icon and the user presses and holds the Alexa button to speak. This needs `com.amazon.inputmethod.service` in `manifest.toml` (see above). Confirmed by Amazon staff in <https://community.amazondeveloper.com/t/speech-to-text-api-for-a-webview-app/29064>.
 - Fire TV / Vega: Alexa flows are more capable than `react-native-voice`. For Fire TV-targeted apps, evaluate Alexa skills / VSK before generic voice input.
 - Confirm transcribed text before submitting. The room can hear and see it.
 
