@@ -10,6 +10,7 @@ This repository contains skills that work across open-source frameworks, tools a
 |-------|-------------|
 | [vega-multi-tv-migration](skills/vega-multi-tv-migration/SKILL.md) | Migrate Vega OS (Fire TV) apps to multi-platform React Native monorepo supporting Android TV, Apple TV, and more |
 | [rn-tv-ui-best-practices](skills/rn-tv-ui-best-practices/SKILL.md) | React Native TV UI best practices for tvOS, Android TV, Fire TV, and Vega OS — focus management, layouts, typography, and remote/D-pad navigation |
+| [evidence-backed-commitments](skills/evidence-backed-commitments/SKILL.md) | Build assistants (Alexa+ MCP servers, Bee, Ring, Fire TV) that turn spoken promises into verifiable contracts and never mark a task done without evidence — lifecycles, verification policy, MCP tool design, device constraints, plus a zero-dependency commitment compiler and contract auditor |
 
 ## Installation
 
