@@ -10,6 +10,7 @@ This repository contains skills that work across open-source frameworks, tools a
 |-------|-------------|
 | [vega-multi-tv-migration](skills/vega-multi-tv-migration/SKILL.md) | Migrate Vega OS (Fire TV) apps to multi-platform React Native monorepo supporting Android TV, Apple TV, and more |
 | [rn-tv-ui-best-practices](skills/rn-tv-ui-best-practices/SKILL.md) | React Native TV UI best practices for tvOS, Android TV, Fire TV, and Vega OS — focus management, layouts, typography, and remote/D-pad navigation |
+| [alexa-plus-mcp-add-on-server](skills/alexa-plus-mcp-add-on-server/SKILL.md) | Build or review a self-hosted MCP server for an Alexa+ add-on: protocol versions, stateless Streamable HTTP, OAuth 2.1 account linking (401, discovery, service vs user tokens), spoken results with MCP Apps cards, and the 500 ms budget |
 
 ## Installation
 
